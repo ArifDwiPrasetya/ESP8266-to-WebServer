@@ -26,8 +26,8 @@ void connectWiFi() {
     Serial.println("Try to connect wifi");
   }
   Serial.println("\nConnected to WiFi");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+ //Serial.print("IP address: ");
+ //Serial.println(WiFi.localIP());
 }
 
 void setup() {
