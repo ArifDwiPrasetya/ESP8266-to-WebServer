@@ -1,3 +1,4 @@
+#include <WiFiClientSecure.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
@@ -26,8 +27,8 @@ void connectWiFi() {
     Serial.println("Try to connect wifi");
   }
   Serial.println("\nConnected to WiFi");
- //Serial.print("IP address: ");
- //Serial.println(WiFi.localIP());
+//  Serial.print("IP address: ");
+//  Serial.println(WiFi.localIP());
 }
 
 void setup() {
@@ -49,7 +50,7 @@ void postData() {
   //KIRIM DATA SENSOR DHT
   float temperature = dht.readTemperature();
   int humidity = dht.readHumidity();
-  int soil = 0 ; //(100.00 - (analogRead(Soil_Moisture) / 10.23))*2;
+  int soil =(100.00 - (analogRead(Soil_Moisture) / 10.23))*2;
 
   if (isnan(temperature) || isnan(humidity)) {
     Serial.println("Failed to read from DHT sensor!");
@@ -83,6 +84,7 @@ void postRequest(const char *path, String data) {
       Serial.println(httpCode);
     }
     https.end();
+    delay(50);
   } else {
     Serial.println("Unable to connect web server");
   }
@@ -110,7 +112,6 @@ void getInstruksi () {
           https.begin(client, "https://monitoring-tanaman.glitch.me/delete_status");
           https.GET();
           String alertSiram = https.getString();
-          StaticJsonDocument<100> doc;
           DeserializationError error = deserializeJson(doc, alertSiram);
 
           if (error) {
@@ -122,6 +123,8 @@ void getInstruksi () {
         }
       }
     }
+    https.end();
+    delay(50);
   }
   else {
     Serial.println("Unable to connect web server");
@@ -136,7 +139,11 @@ void loop() {
     connectWiFi();
   }else{
   postStatus();
+  delay(20);
   getInstruksi();
+  delay(20);
   postData();
-  delay(1000); }
+  delay(20);
+  }
+  delay(1000); 
 }
